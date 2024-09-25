@@ -1,36 +1,88 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Spotify Playlist to Text Converter
+
+This project is a **Spotify Playlist to Text Converter** built with **Next.js** and **React**. It allows users to input a Spotify playlist link and converts the playlist data (song names and artist names) into formatted text. The text can then be easily copied to the clipboard for use elsewhere.
+
+## Features
+
+- Validates Spotify playlist URLs.
+- Fetches playlist data using Spotify's API.
+- Converts playlist items into formatted text: `Song Name - Artist 1, Artist 2, ...`.
+- TODO: Copy formatted text to the clipboard with a single click.
+- TODO: Displays a toast notification on successful or failed clipboard copy.
+
+## Table of Contents
+
+- [Spotify Playlist to Text Converter](#spotify-playlist-to-text-converter)
+  - [Features](#features)
+  - [Table of Contents](#table-of-contents)
+  - [Technologies Used](#technologies-used)
+  - [Prerequisites](#prerequisites)
+  - [Getting Started](#getting-started)
+    - [Clone the Repository](#clone-the-repository)
+    - [Install Dependencies](#install-dependencies)
+    - [Environment Variables](#environment-variables)
+    - [Run Locally](#run-locally)
+  - [How to Use](#how-to-use)
+
+## Technologies Used
+
+- **Next.js** for server-side rendering and routing.
+- **React** for building UI components.
+- **Spotify Web API** for fetching playlist data.
+- **Tailwind CSS** for styling.
+- **TypeScript** for type safety.
+
+## Prerequisites
+
+To run this project locally, ensure you have the following installed:
+
+- **Node.js** (v22 or above)
+- **npm**
+- A **Spotify Developer Account** to obtain **Client ID** and **Client Secret**.
 
 ## Getting Started
 
-First, run the development server:
+### Clone the Repository
+
+Clone the repository to your local machine using the following command:
+
+```bash
+git clone https://github.com/your-username/spotify-playlist-to-text.git
+cd spotify-playlist-to-text
+```
+
+### Install Dependencies
+
+Once inside the project directory, install the necessary dependencies:
+
+```bash
+npm install
+```
+
+### Environment Variables
+
+To connect to the Spotify API, create a .env.local file in the root of your project and add your Spotify API credentials:
+
+```bash
+SPOTIFY_CLIENT_ID=your_spotify_client_id
+SPOTIFY_CLIENT_SECRET=your_spotify_client_secret
+```
+
+You can obtain these credentials by creating an application in the [Spotify Developer Dashboard](https://developer.spotify.com/dashboard).
+
+### Run Locally
+
+To run the project in development mode:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Once started, the app will be available at [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## How to Use
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Enter a Spotify Playlist URL: Paste the URL of a Spotify playlist into the input field. Only valid Spotify playlist links are accepted.
+2. Convert to Text: Click the Convert to Text button. The application will fetch the playlist data from Spotify and format it.
+3. (IN DEVELOPMENT) Copy the Playlist: After the playlist data is displayed in the textarea, click the Copy to Clipboard button to copy the formatted playlist (songs and artists) to your clipboard.
+4. (IN DEVELOPMENT) Success Notification: A toast notification will appear to confirm the success or failure of the copy action.
