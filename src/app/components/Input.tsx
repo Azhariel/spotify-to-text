@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { Playlist, PlaylistItems } from '../server/actions/actions';
+import Toast from './Toast';
 
 interface InputProps {
 	handleSubmit: (formData: FormData) => Promise<Playlist | void>;
@@ -12,6 +13,25 @@ export default function Input({ handleSubmit }: InputProps): React.ReactElement 
 	const [error, setError] = useState('');
 	const [playlistData, setPlaylistData] = useState<string[] | null>(null);
 	const [loading, setLoading] = useState(false);
+
+	const [toastVisible, setToastVisible] = useState(false);
+	const [toastMessage, setToastMessage] = useState('');
+
+	const handleCopyToClipboard = () => {
+		if (playlistData) {
+			const textToCopy = playlistData.join('\n');
+			navigator.clipboard
+				.writeText(textToCopy)
+				.then(() => {
+					setToastMessage('Text copied to clipboard!');
+					setToastVisible(true);
+				})
+				.catch(() => {
+					setToastMessage('Failed to copy text.');
+					setToastVisible(true);
+				});
+		}
+	};
 
 	useEffect(() => {
 		function validateForm() {
@@ -55,7 +75,7 @@ export default function Input({ handleSubmit }: InputProps): React.ReactElement 
 
 	return (
 		<div>
-			<div className='text-red-600 min-h-6'>{error}</div>
+			<div className='text-red-600 min-h-6 text-center'>{error}</div>
 			<form className='m-4 flex' onSubmit={handleFormSubmit} id='playlist'>
 				<input
 					className='rounded-l-lg p-4 border-t mr-0 border-b border-l text-gray-800 border-gray-200 bg-white'
@@ -66,7 +86,7 @@ export default function Input({ handleSubmit }: InputProps): React.ReactElement 
 					onChange={(e) => setUrl(e.target.value)}
 				/>
 				<button
-					className='px-8 rounded-r-lg bg-green-600  text-gray-800 font-bold p-4 uppercase border-green-500 border-t border-b border-r disabled:bg-gray-600 disabled:text-gray-400 disabled:border-gray-500'
+					className='px-8 rounded-r-lg bg-[#3be477]  text-gray-800 font-bold p-4 uppercase border-[#3be477] border-t border-b border-r hover:bg-green-300 disabled:bg-gray-600 disabled:text-gray-400 disabled:border-gray-500'
 					type='submit'
 					disabled={!isValid || loading}
 				>
@@ -75,12 +95,21 @@ export default function Input({ handleSubmit }: InputProps): React.ReactElement 
 			</form>
 
 			{playlistData && (
-				<textarea
-					className='w-full h-64 p-4 mt-4 border rounded bg-gray-100 text-gray-800'
-					readOnly
-					value={playlistData.join('\n')}
-				/>
+				<div className='flex flex-col justify-center mt-4'>
+					<textarea
+						className='w-full h-64 p-4 mt-4 border rounded bg-gray-100 text-gray-800'
+						readOnly
+						value={playlistData.join('\n')}
+					/>
+					<button
+						className='px-4 py-2 bg-[#3be477] text-gray-800 rounded hover:bg-green-300'
+						onClick={handleCopyToClipboard}
+					>
+						Copy to Clipboard
+					</button>
+				</div>
 			)}
+			<Toast message={toastMessage} visible={toastVisible} onClose={() => setToastVisible(false)} />
 		</div>
 	);
 }
