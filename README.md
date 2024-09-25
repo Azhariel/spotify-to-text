@@ -7,8 +7,8 @@ This project is a **Spotify Playlist to Text Converter** built with **Next.js** 
 - Validates Spotify playlist URLs.
 - Fetches playlist data using Spotify's API.
 - Converts playlist items into formatted text: `Song Name - Artist 1, Artist 2, ...`.
-- TODO: Copy formatted text to the clipboard with a single click.
-- TODO: Displays a toast notification on successful or failed clipboard copy.
+- Copy formatted text to the clipboard with a single click.
+- Displays a toast notification on successful or failed clipboard copy.
 
 ## Table of Contents
 
@@ -84,5 +84,5 @@ Once started, the app will be available at [http://localhost:3000](http://localh
 
 1. Enter a Spotify Playlist URL: Paste the URL of a Spotify playlist into the input field. Only valid Spotify playlist links are accepted.
 2. Convert to Text: Click the Convert to Text button. The application will fetch the playlist data from Spotify and format it.
-3. (IN DEVELOPMENT) Copy the Playlist: After the playlist data is displayed in the textarea, click the Copy to Clipboard button to copy the formatted playlist (songs and artists) to your clipboard.
-4. (IN DEVELOPMENT) Success Notification: A toast notification will appear to confirm the success or failure of the copy action.
+3. Copy the Playlist: After the playlist data is displayed in the textarea, click the Copy to Clipboard button to copy the formatted playlist (songs and artists) to your clipboard.
+4. Success Notification: A toast notification will appear to confirm the success or failure of the copy action.
