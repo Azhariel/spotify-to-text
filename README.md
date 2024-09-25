@@ -61,7 +61,7 @@ npm install
 
 ### Environment Variables
 
-To connect to the Spotify API, create a .env.local file in the root of your project and add your Spotify API credentials:
+To connect to the Spotify API, create a `.env` file in the root of your project and add your Spotify API credentials:
 
 ```bash
 SPOTIFY_CLIENT_ID=your_spotify_client_id
