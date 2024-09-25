@@ -59,15 +59,15 @@ async function getPlaylist(id: string): Promise<Playlist | void> {
 		try {
 			const response = await fetch(url, options);
 			const data = await response.json();
-			if (!total) total = data.total; // Captura o número total de itens na primeira requisição
+			if (!total) total = data.total;
 
-			allTracks = [...allTracks, ...data.items]; // Adiciona os novos itens à lista total
-			offset += limit; // Incrementa o offset para pegar os próximos 100 itens
+			allTracks = [...allTracks, ...data.items];
+			offset += limit;
 		} catch (err) {
 			console.error('Error fetching playlist', err);
 			return;
 		}
-	} while (offset < total); // Continua enquanto ainda houver itens para buscar
+	} while (offset < total);
 
 	return { items: allTracks };
 }
