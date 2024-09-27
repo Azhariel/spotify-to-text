@@ -3,11 +3,11 @@ import { useEffect, useState } from 'react';
 import { Playlist, PlaylistItems } from '../server/actions/actions';
 import Toast from './Toast';
 
-interface InputProps {
+interface PlaylistToTextProps {
 	handleSubmit: (formData: FormData) => Promise<Playlist | void>;
 }
 
-export default function Input({ handleSubmit }: InputProps): React.ReactElement {
+export default function PlaylistToText({ handleSubmit }: PlaylistToTextProps): React.ReactElement {
 	const [url, setUrl] = useState('');
 	const [isValid, setIsValid] = useState(false);
 	const [error, setError] = useState('');
