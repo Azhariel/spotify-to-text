@@ -6,11 +6,37 @@ export interface Playlist {
 
 export interface PlaylistItems {
 	track: {
+		id: string;
 		name: string;
 		artists: {
 			name: string;
 		}[];
 	};
+}
+
+export interface AudioFeatures {
+	audio_features: Track[];
+}
+
+export interface Track {
+	danceability: number;
+	energy: number;
+	key: number;
+	loudness: number;
+	mode: number;
+	speechiness: number;
+	acousticness: number;
+	instrumentalness: number;
+	liveness: number;
+	valence: number;
+	tempo: number;
+	type: string;
+	id: string;
+	uri: string;
+	track_href: string;
+	analysis_url: string;
+	duration_ms: number;
+	time_signature: number;
 }
 
 export async function submitSpotifyPlaylist(formData: FormData): Promise<Playlist | void> {
@@ -46,16 +72,15 @@ async function getPlaylist(id: string): Promise<Playlist | void> {
 	const limit = 100; // Spotify API limits to 100 items per request
 	let total = 0;
 
+	const url = `https://api.spotify.com/v1/playlists/${id}/tracks?offset=${offset}&limit=${limit}&fields=total,items(track(id,name,artists(name)))`;
+
+	const options = {
+		method: 'GET',
+		headers: {
+			Authorization: `Bearer ${token}`,
+		},
+	};
 	do {
-		const url = `https://api.spotify.com/v1/playlists/${id}/tracks?offset=${offset}&limit=${limit}&fields=total,items(track(name,artists(name)))`;
-
-		const options = {
-			method: 'GET',
-			headers: {
-				Authorization: `Bearer ${token}`,
-			},
-		};
-
 		try {
 			const response = await fetch(url, options);
 			const data = await response.json();
@@ -100,4 +125,47 @@ async function getToken(): Promise<string | undefined> {
 		console.error('Error fetching token', err);
 		return undefined;
 	}
+}
+
+export async function getAudioFeatures(playlist: Playlist) {
+	const token = await getToken();
+	if (!token) {
+		console.error('Failed to retrieve token');
+		return;
+	}
+
+	let allTracks: Track[] = [];
+	let offset = 0;
+	const limit = 100; // Spotify API limits to 100 items per request
+	let total = 0;
+
+	const options = {
+		method: 'GET',
+		headers: {
+			Authorization: `Bearer ${token}`,
+		},
+	};
+
+	do {
+		console.log('Iterating through tracks', offset, total);
+		console.log(playlist.items.slice(offset, offset + limit));
+		const trackIds = playlist.items
+			.slice(offset, offset + limit)
+			.map((item) => item.track.id)
+			.join(',');
+		const url = `https://api.spotify.com/v1/audio-features?ids=${trackIds}`;
+		try {
+			const response = await fetch(url, options);
+			const data = await response.json();
+			if (!total) total = data.audio_features.length;
+
+			allTracks = [...allTracks, ...data.audio_features];
+			offset += limit;
+		} catch (err) {
+			console.error('Error fetching playlist', err);
+			return;
+		}
+	} while (offset < total);
+
+	return { audio_features: allTracks };
 }
