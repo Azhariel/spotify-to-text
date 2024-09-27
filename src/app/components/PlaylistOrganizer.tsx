@@ -8,7 +8,12 @@ interface PlaylistOrganizerProps {
 interface FullTrack extends Track {
 	name: string;
 	artists: string;
+	'danceability * tempo': number;
 }
+
+type NumericFields = {
+	[K in keyof Track]: Track[K] extends number ? K : never;
+}[keyof Track];
 
 export default function PlaylistOrganizer({ handleSubmit }: PlaylistOrganizerProps): React.ReactElement {
 	const [playlistUrl, setPlaylistUrl] = useState('');
@@ -43,6 +48,7 @@ export default function PlaylistOrganizer({ handleSubmit }: PlaylistOrganizerPro
 			return {
 				name: playlistItem.track.name,
 				artists: playlistItem.track.artists.map((artist) => artist.name).join(', '),
+				'danceability * tempo': item.danceability * item.tempo,
 				...item,
 			};
 		});
@@ -52,6 +58,11 @@ export default function PlaylistOrganizer({ handleSubmit }: PlaylistOrganizerPro
 	function sortTracks(field: keyof Track) {
 		const sortedTracks = [...tracks].sort((a, b) => {
 			const direction = sortDirection === 'asc' ? 1 : -1;
+			if (typeof a[field] === 'string' && typeof b[field] === 'string') {
+				if (a[field].toLowerCase() < b[field].toLowerCase()) return -1 * direction;
+				if (a[field].toLowerCase() > b[field].toLowerCase()) return 1 * direction;
+				return 0;
+			}
 			if (a[field] < b[field]) return -1 * direction;
 			if (a[field] > b[field]) return 1 * direction;
 			return 0;
@@ -59,6 +70,22 @@ export default function PlaylistOrganizer({ handleSubmit }: PlaylistOrganizerPro
 		setTracks(sortedTracks);
 		setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
 		setSortField(field);
+	}
+
+	function calculateBackgroundColor(value: number, min: number, max: number): string {
+		const percent = (value - min) / (max - min);
+		if (percent < 0.2) return 'bg-red-900'; // Cor para valores baixos
+		if (percent < 0.4) return 'bg-orange-800'; // Cor para valores intermediários baixos
+		if (percent < 0.6) return 'bg-yellow-600'; // Cor para valores intermediários
+		if (percent < 0.8) return 'bg-green-700'; // Cor para valores intermediários altos
+		return 'bg-green-500'; // Cor para valores altos
+	}
+
+	function getColumnMinMax(field: NumericFields) {
+		const values = tracks.map((track) => track[field]);
+		const min = Math.min(...values);
+		const max = Math.max(...values);
+		return { min, max };
 	}
 
 	return (
@@ -84,6 +111,7 @@ export default function PlaylistOrganizer({ handleSubmit }: PlaylistOrganizerPro
 							'name',
 							'artists',
 							'acousticness',
+							'danceability * tempo',
 							'danceability',
 							'energy',
 							'instrumentalness',
@@ -94,7 +122,7 @@ export default function PlaylistOrganizer({ handleSubmit }: PlaylistOrganizerPro
 							'valence',
 						].map((field) => (
 							<th key={field} className='p-4 cursor-pointer' onClick={() => sortTracks(field as keyof Track)}>
-								{field.charAt(0).toUpperCase() + field.slice(1)}
+								{field.toUpperCase()}
 								{sortField === field && (sortDirection === 'asc' ? ' ↑' : ' ↓')}
 							</th>
 						))}
@@ -105,15 +133,26 @@ export default function PlaylistOrganizer({ handleSubmit }: PlaylistOrganizerPro
 						<tr key={index}>
 							<td className='border px-4 py-2'>{track.name}</td>
 							<td className='border px-4 py-2'>{track.artists}</td>
-							<td className='border px-4 py-2'>{track.acousticness}</td>
-							<td className='border px-4 py-2'>{track.danceability}</td>
-							<td className='border px-4 py-2'>{track.energy}</td>
-							<td className='border px-4 py-2'>{track.instrumentalness}</td>
-							<td className='border px-4 py-2'>{track.liveness}</td>
-							<td className='border px-4 py-2'>{track.loudness}</td>
-							<td className='border px-4 py-2'>{track.speechiness}</td>
-							<td className='border px-4 py-2'>{track.tempo}</td>
-							<td className='border px-4 py-2'>{track.valence}</td>
+							{[
+								'acousticness',
+								'danceability * tempo',
+								'danceability',
+								'energy',
+								'instrumentalness',
+								'liveness',
+								'loudness',
+								'speechiness',
+								'tempo',
+								'valence',
+							].map((field) => {
+								const { min, max } = getColumnMinMax(field as NumericFields);
+								const colorClass = calculateBackgroundColor(track[field as NumericFields], min, max);
+								return (
+									<td key={field} className={`border px-4 py-2 ${colorClass}`}>
+										{track[field as NumericFields]}
+									</td>
+								);
+							})}
 						</tr>
 					))}
 				</tbody>
