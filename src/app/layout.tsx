@@ -14,8 +14,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-	title: 'Spotify to Text',
-	description: 'Convert Spotify playlists to text',
+	title: 'Spotify Toolbox',
+	description: 'Spotify Toolbox is a collection of tools to help you manage your Spotify playlists.',
 };
 
 export default function RootLayout({
