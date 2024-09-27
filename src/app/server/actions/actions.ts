@@ -147,8 +147,6 @@ export async function getAudioFeatures(playlist: Playlist) {
 	};
 
 	do {
-		console.log('Iterating through tracks', offset, total);
-		console.log(playlist.items.slice(offset, offset + limit));
 		const trackIds = playlist.items
 			.slice(offset, offset + limit)
 			.map((item) => item.track.id)
