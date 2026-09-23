@@ -72,8 +72,6 @@ async function getPlaylist(id: string): Promise<Playlist | void> {
 	const limit = 100; // Spotify API limits to 100 items per request
 	let total = 0;
 
-	const url = `https://api.spotify.com/v1/playlists/${id}/tracks?offset=${offset}&limit=${limit}&fields=total,items(track(id,name,artists(name)))`;
-
 	const options = {
 		method: 'GET',
 		headers: {
@@ -81,7 +79,9 @@ async function getPlaylist(id: string): Promise<Playlist | void> {
 		},
 	};
 	do {
+		const url = `https://api.spotify.com/v1/playlists/${id}/tracks?offset=${offset}&limit=${limit}&fields=total,items(track(id,name,artists(name)))`;
 		try {
+			console.log(total, offset, limit);
 			const response = await fetch(url, options);
 			const data = await response.json();
 			if (!total) total = data.total;
@@ -93,7 +93,7 @@ async function getPlaylist(id: string): Promise<Playlist | void> {
 			return;
 		}
 	} while (offset < total);
-
+	console.log(allTracks[allTracks.length - 1]);
 	return { items: allTracks };
 }
 
